@@ -1,24 +1,44 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from './supabaseClient'
 import type { User } from '@supabase/supabase-js'
+import type { UserProfile } from '../types'
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(supabase.auth.getUser()?.data.user ?? null)
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const loadUser = async () => {
       const {
         data: { user: currentUser },
       } = await supabase.auth.getUser()
+
       setUser(currentUser)
+
+      if (currentUser) {
+        const { data: profileData } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
+        setProfile(profileData ?? null)
+      } else {
+        setProfile(null)
+      }
+
       setLoading(false)
     }
 
-    fetchUser()
+    loadUser()
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+
+      if (currentUser) {
+        const { data: profileData } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
+        setProfile(profileData ?? null)
+      } else {
+        setProfile(null)
+      }
+
       setLoading(false)
     })
 
@@ -27,5 +47,5 @@ export function useAuth() {
     }
   }, [])
 
-  return useMemo(() => ({ user, loading }), [user, loading])
+  return useMemo(() => ({ user, profile, loading }), [user, profile, loading])
 }

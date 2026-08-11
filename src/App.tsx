@@ -7,12 +7,14 @@ import { ListingDetailsPage } from './pages/ListingDetailsPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SubmitListingPage } from './pages/SubmitListingPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { MessagesPage } from './pages/MessagesPage'
+import { OffersPage } from './pages/OffersPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { Layout } from './components/Layout'
 import { useAuth } from './lib/auth'
 
 export default function App() {
-  const { user, loading } = useAuth()
+  const { user, profile, loading } = useAuth()
 
   if (loading) {
     return (
@@ -32,7 +34,9 @@ export default function App() {
         <Route path="/listing/:id" element={<ListingDetailsPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/sell" element={user ? <SubmitListingPage /> : <Navigate to="/login" />} />
-        <Route path="/admin" element={user?.app_metadata?.role === 'admin' ? <DashboardPage /> : <Navigate to="/" />} />
+        <Route path="/messages" element={user ? <MessagesPage /> : <Navigate to="/login" />} />
+        <Route path="/offers" element={user ? <OffersPage /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={profile?.role === 'admin' ? <DashboardPage /> : <Navigate to="/" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>

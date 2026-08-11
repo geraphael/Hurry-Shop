@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd /workspaces/Hurry-Shop && grep -R \"declare function useQuery\" -n node_modules/@tanstack/react-query \\| head -20 && node -p \"require\\('\\./node_modules/@tanstack/react-query/package\\.json'\\)\\.version\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

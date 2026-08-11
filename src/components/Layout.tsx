@@ -7,11 +7,11 @@ function activeClass({ isActive }: { isActive: boolean }) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
 
   const signOut = async () => {
     await supabase.auth.signOut()
-    window.location.href = '/login'
+    window.location.href = '/'
   }
 
   return (
@@ -34,10 +34,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <NavLink to="/sell" className={activeClass}>
               Sell
             </NavLink>
-            <NavLink to="/profile/me" className={activeClass}>
-              Profile
-            </NavLink>
-            {user?.app_metadata?.role === 'admin' && (
+            {user && (
+              <>
+                <NavLink to="/offers" className={activeClass}>
+                  Offers
+                </NavLink>
+                <NavLink to="/messages" className={activeClass}>
+                  Messages
+                </NavLink>
+                <NavLink to={`/profile/${profile?.id ?? 'me'}`} className={activeClass}>
+                  Profile
+                </NavLink>
+              </>
+            )}
+            {profile?.role === 'admin' && (
               <NavLink to="/admin" className={activeClass}>
                 Admin
               </NavLink>
