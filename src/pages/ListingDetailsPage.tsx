@@ -4,7 +4,6 @@ import { useAuth } from '../lib/auth'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchListingById, createOffer, reportListing } from '../lib/db'
 import type { Listing } from '../types'
-import type { Listing } from '../types'
 
 export function ListingDetailsPage() {
   const { id } = useParams()

@@ -86,4 +86,18 @@ export interface Report {
   details?: string | null
   status: 'OPEN' | 'RESOLVED' | 'DISMISSED'
   created_at: string
+  reporter?: {
+    id: string
+    full_name: string
+    email: string
+  }
+  reported_user?: {
+    id: string
+    full_name: string
+    email: string
+  }
+  listing?: {
+    id: string
+    title: string
+  }
 }

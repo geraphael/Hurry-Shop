@@ -17,10 +17,10 @@ export function DashboardPage() {
     queryKey: ['pending-sellers'],
     queryFn: fetchPendingSellerRequests,
   })
-  const { data: openReports = [] } = useQuery<Report[]>({
+  const { data: openReports = [] } = useQuery({
     queryKey: ['open-reports'],
-    queryFn: fetchOpenReports,
-  })
+    queryFn: () => fetchOpenReports(),
+  }) as { data: Report[]; isLoading: boolean }
 
   const handleApprove = async (listingId: string) => {
     await approveListing(listingId)

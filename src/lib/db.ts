@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient'
-import type { Category, Listing, Offer, Conversation, Message, UserProfile, ListingStatus } from '../types'
+import type { Category, Listing, Offer, Conversation, Message, UserProfile, ListingStatus, Report } from '../types'
 
 export async function fetchApprovedListings(search?: string, categoryId?: number) {
   let query = supabase
