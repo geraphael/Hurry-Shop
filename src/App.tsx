@@ -15,7 +15,22 @@ import { Layout } from './components/Layout'
 import { useAuth } from './lib/auth'
 
 export default function App() {
-  const { user, profile, loading } = useAuth()
+  const { user, profile, loading, error } = useAuth()
+
+  if (error) {
+    return (
+      <div className="app-shell">
+        <div className="error-screen">
+          <h1>Application failed to load</h1>
+          <p>{error.message}</p>
+          <p>
+            Check your Vercel environment variables:<br />
+            <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (
