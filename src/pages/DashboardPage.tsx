@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { fetchAdminStats, fetchPendingListings, approveListing, rejectListing, fetchPendingSellerRequests, fetchOpenReports } from '../lib/db'
+import { fetchAdminStats, fetchPendingListings, approveListing, rejectListing, fetchPendingSellerRequests, fetchOpenReports, verifySeller } from '../lib/db'
 import type { Listing, UserProfile, Report } from '../types'
 
 /* ─── Helpers ─────────────────────────────────────────── */
@@ -56,6 +56,12 @@ export function DashboardPage() {
     if (!reason) return
     await rejectListing(listingId, reason)
     await queryClient.invalidateQueries({ queryKey: ['pending-listings'] })
+    await queryClient.invalidateQueries({ queryKey: ['admin-stats'] })
+  }
+
+  const handleVerifySeller = async (userId: string, status: 'VERIFIED' | 'REJECTED') => {
+    await verifySeller(userId, status)
+    await queryClient.invalidateQueries({ queryKey: ['pending-sellers'] })
     await queryClient.invalidateQueries({ queryKey: ['admin-stats'] })
   }
 
@@ -146,6 +152,14 @@ export function DashboardPage() {
                   <p className="meta-line">email: {seller.email}</p>
                   <p className="meta-line">campus: {seller.campus || '—'}</p>
                   <p className="meta-line">joined: {formatDate(seller.created_at)}</p>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.7rem' }}>
+                    <button type="button" className="admin-btn admin-btn-approve" onClick={() => handleVerifySeller(seller.id, 'VERIFIED')}>
+                      ✓ verify
+                    </button>
+                    <button type="button" className="admin-btn admin-btn-reject" onClick={() => handleVerifySeller(seller.id, 'REJECTED')}>
+                      ✗ reject
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

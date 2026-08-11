@@ -9,6 +9,7 @@ import { SubmitListingPage } from './pages/SubmitListingPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { MessagesPage } from './pages/MessagesPage'
 import { OffersPage } from './pages/OffersPage'
+import { SellerOffersPage } from './pages/SellerOffersPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { Layout } from './components/Layout'
 import { useAuth } from './lib/auth'
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/sell" element={user ? <SubmitListingPage /> : <Navigate to="/login" />} />
         <Route path="/messages" element={user ? <MessagesPage /> : <Navigate to="/login" />} />
         <Route path="/offers" element={user ? <OffersPage /> : <Navigate to="/login" />} />
+        <Route path="/seller-offers" element={user ? <SellerOffersPage /> : <Navigate to="/login" />} />
         <Route path="/admin" element={profile?.role === 'admin' ? <DashboardPage /> : <Navigate to="/" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

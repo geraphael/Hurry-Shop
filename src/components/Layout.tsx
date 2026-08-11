@@ -1,6 +1,8 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { supabase } from '../lib/supabaseClient'
+import { useQuery } from '@tanstack/react-query'
+import { fetchUnreadCount } from '../lib/db'
 
 function activeClass({ isActive }: { isActive: boolean }) {
   return isActive ? 'nav-link active' : 'nav-link'
@@ -8,6 +10,13 @@ function activeClass({ isActive }: { isActive: boolean }) {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { user, profile } = useAuth()
+
+  const { data: unreadCount = 0 } = useQuery({
+    queryKey: ['unread-count', profile?.id],
+    queryFn: () => fetchUnreadCount(profile!.id),
+    enabled: Boolean(profile?.id),
+    refetchInterval: 10000,
+  }) as { data: number }
 
   const signOut = async () => {
     await supabase.auth.signOut()
@@ -39,8 +48,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <NavLink to="/offers" className={activeClass}>
                   Offers
                 </NavLink>
+                <NavLink to="/seller-offers" className={activeClass}>
+                  Inbox
+                </NavLink>
                 <NavLink to="/messages" className={activeClass}>
-                  Messages
+                  Messages{unreadCount > 0 && <span className="unread-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>}
                 </NavLink>
                 <NavLink to={`/profile/${profile?.id ?? 'me'}`} className={activeClass}>
                   Profile

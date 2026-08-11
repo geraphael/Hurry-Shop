@@ -337,3 +337,119 @@ export async function sendMessage(values: {
   await supabase.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', conversationId)
   return (messageData ?? [])[0] as Message
 }
+
+/* ─── Messages / Thread ───────────────────────────────── */
+
+export async function fetchConversationMessages(conversationId: string) {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true })
+
+  if (error) {
+    throw error
+  }
+  return (data ?? []) as Message[]
+}
+
+export async function markMessagesRead(conversationId: string, userId: string) {
+  const { error } = await supabase
+    .from('messages')
+    .update({ read: true })
+    .eq('conversation_id', conversationId)
+    .neq('sender_id', userId)
+
+  if (error) throw error
+}
+
+export async function fetchUnreadCount(userId: string) {
+  const { count, error } = await supabase
+    .from('messages')
+    .select('id', { count: 'exact', head: true })
+    .not('sender_id', 'eq', userId)
+    .eq('read', false)
+    .in('conversation_id', (
+      await supabase
+        .from('conversations')
+        .select('id')
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+    ).data?.map(c => c.id) ?? [])
+
+  if (error) throw error
+  return count ?? 0
+}
+
+/* ─── Seller offers management ────────────────────────── */
+
+export async function fetchOffersByListing(listingId: string) {
+  const { data, error } = await supabase
+    .from('offers')
+    .select('*, buyer:profiles(id,full_name,email,campus)')
+    .eq('listing_id', listingId)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []) as Offer[]
+}
+
+export async function fetchOffersForSeller(sellerId: string) {
+  const { data: listings, error: listError } = await supabase
+    .from('listings')
+    .select('id')
+    .eq('seller_id', sellerId)
+
+  if (listError) throw listError
+  const ids = listings?.map(l => l.id) ?? []
+  if (!ids.length) return []
+
+  const { data, error } = await supabase
+    .from('offers')
+    .select('*, listing:listing_id(id,title,price,cover_url), buyer:profiles(id,full_name,email,campus)')
+    .in('listing_id', ids)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []) as Offer[]
+}
+
+export async function updateOfferStatus(offerId: string, status: 'ACCEPTED' | 'REJECTED') {
+  const { error } = await supabase.from('offers').update({ status }).eq('id', offerId)
+  if (error) throw error
+}
+
+/* ─── Admin seller verification ───────────────────────── */
+
+export async function verifySeller(userId: string, status: 'VERIFIED' | 'REJECTED') {
+  const { error } = await supabase
+    .from('profiles')
+    .update({ verification_status: status })
+    .eq('id', userId)
+
+  if (error) throw error
+}
+
+/* ─── Listing edit / delete ───────────────────────────── */
+
+export async function updateListing(
+  listingId: string,
+  values: Partial<{
+    title: string
+    description: string
+    price: number
+    category_id: number
+    condition: string
+    campus_location: string
+    listing_type: string
+    cover_url: string
+    image_urls: string[]
+  }>,
+) {
+  const { error } = await supabase.from('listings').update(values).eq('id', listingId)
+  if (error) throw error
+}
+
+export async function deleteListing(listingId: string) {
+  const { error } = await supabase.from('listings').delete().eq('id', listingId)
+  if (error) throw error
+}

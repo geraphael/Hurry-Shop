@@ -399,3 +399,212 @@ button.secondary {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ═══════════════════════════════════════
+   MESSAGES — Chat thread view
+   ═══════════════════════════════════════ */
+
+.messages-layout {
+  min-height: 60vh;
+}
+
+.messages-container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  min-height: 50vh;
+  margin-top: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.messages-sidebar {
+  background: rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(148, 163, 184, 0.08);
+  padding: 0.75rem;
+}
+
+.messages-sidebar h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  margin: 0 0 0.5rem 0;
+}
+
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.conversation-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.conversation-item:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.conversation-item.active {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.conversation-item strong {
+  font-size: 0.85rem;
+}
+
+.conversation-item p {
+  font-size: 0.72rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messages-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 50vh;
+}
+
+.chat-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.chat-header strong {
+  font-size: 0.9rem;
+  display: block;
+}
+
+.chat-header span {
+  font-size: 0.72rem;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 40vh;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 0.55rem 0.85rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.chat-bubble.mine {
+  align-self: flex-end;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-bottom-right-radius: 0.25rem;
+}
+
+.chat-bubble.theirs {
+  align-self: flex-start;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom-left-radius: 0.25rem;
+}
+
+.chat-bubble p {
+  margin: 0;
+}
+
+.chat-time {
+  font-size: 0.62rem;
+  color: #64748b;
+  display: block;
+  margin-top: 0.2rem;
+  opacity: 0.7;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.chat-input textarea {
+  flex: 1;
+  border-radius: 0.75rem;
+  resize: none;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.chat-input button {
+  align-self: flex-end;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.chat-empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+/* ═══════════════════════════════════════
+   UNREAD BADGE
+   ═══════════════════════════════════════ */
+
+.unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+  background: #ef4444;
+  color: white;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+/* ═══════════════════════════════════════
+   MISC
+   ═══════════════════════════════════════ */
+
+hr.divider {
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  margin: 0.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .messages-container {
+    grid-template-columns: 1fr;
+  }
+  .messages-sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    max-height: 30vh;
+    overflow-y: auto;
+  }
+}
