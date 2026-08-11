@@ -7,23 +7,29 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     const loadUser = async () => {
-      const {
-        data: { user: currentUser },
-      } = await supabase.auth.getUser()
+      try {
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser()
 
-      setUser(currentUser)
+        setUser(currentUser)
 
-      if (currentUser) {
-        const { data: profileData } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
-        setProfile(profileData ?? null)
-      } else {
-        setProfile(null)
+        if (currentUser) {
+          const { data: profileData } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single()
+          setProfile(profileData ?? null)
+        } else {
+          setProfile(null)
+        }
+      } catch (err) {
+        setError(err as Error)
+        console.error('Auth load error:', err)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     }
 
     loadUser()
@@ -47,5 +53,5 @@ export function useAuth() {
     }
   }, [])
 
-  return useMemo(() => ({ user, profile, loading }), [user, profile, loading])
+  return useMemo(() => ({ user, profile, loading, error }), [user, profile, loading, error])
 }
